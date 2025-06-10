@@ -90,6 +90,30 @@ export default memo(Navbar);
 
 And when the sidebar active state is changed, only the component that uses `useSidebarActive()` hook will be re-rendered, in this case the only affected component is `<Sidebar />`.
 
+## Provider with initial state
+
+You can also provide an initial state to the provider by passing it as a prop:
+
+```tsx filename="src/context/sidebar-active.tsx" copy
+import { createContextState } from 'foxact/context-state';
+
+const [SidebarActiveProvider, useSidebarActive, useSetSidebarActive] = createContextState();
+export { SidebarActiveProvider, useSidebarActive, useSetSidebarActive };
+```
+
+```tsx filename="src/app/layout.tsx" copy
+// server component
+import { cookies } from 'next/headers'
+import { SidebarActiveProvider } from '../context/sidebar-active';
+export default async function Layout({ children }: React.PropsWithChildren) {
+  return (
+    <SidebarActiveProvider initialState={await cookie().get('sidebar-active') === 'true'}>
+      {children}
+    </SidebarActiveProvider>
+  );
+}
+```
+
 ## Read context state conditionally
 
 Normally, you can not read context state conditionally per Rules of Hooks:
